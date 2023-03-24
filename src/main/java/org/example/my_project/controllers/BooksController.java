@@ -17,12 +17,13 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/books")
 public class BooksController {
+
     private final BookDAO bookDAO;
     private final PersonDAO personDAO;
 
     @Autowired
-    public BooksController(BookDAO bookDAO, PersonDAO personDAO) {
-        this.bookDAO = bookDAO;
+    public BooksController(BookDAO BookDAO, PersonDAO personDAO) {
+        this.bookDAO = BookDAO;
         this.personDAO = personDAO;
     }
 
@@ -47,24 +48,23 @@ public class BooksController {
     }
 
     @GetMapping("/new")
-    public String newBook(@ModelAttribute("book") Book book) {
+    public String newBook(@ModelAttribute("book") Book Book) {
         return "books/new";
     }
 
     @PostMapping()
-    public String create(@ModelAttribute("book") @Valid Book book,
+    public String create(@ModelAttribute("book") @Valid Book Book,
                          BindingResult bindingResult) {
-
         if (bindingResult.hasErrors())
             return "books/new";
 
-        personDAO.save(Book);
+        bookDAO.save(Book);
         return "redirect:/books";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("book", personDAO.show(id));
+        model.addAttribute("book", bookDAO.show(id));
         return "books/edit";
     }
 
@@ -74,13 +74,13 @@ public class BooksController {
         if (bindingResult.hasErrors())
             return "books/edit";
 
-        personDAO.update(id, book);
+        bookDAO.update(id, book);
         return "redirect:/books";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
-        personDAO.delete(id);
+        bookDAO.delete(id);
         return "redirect:/books";
     }
 
